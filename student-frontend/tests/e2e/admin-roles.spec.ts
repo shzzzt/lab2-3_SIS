@@ -1,0 +1,43 @@
+import { expect, test } from '@playwright/test'
+
+test.describe('live role separation', () => {
+  test.skip(process.env.E2E_API_TESTS !== '1', 'Requires seeded local API.')
+
+  test('admin has account and settings screens and cannot enter academic screens', async ({ page }) => {
+    await page.goto('/login')
+    await page.getByLabel('Email').fill('admin@example.com')
+    await page.getByLabel('Password').fill('password')
+    await page.getByRole('button', { name: 'Sign in' }).click()
+    await expect(page.getByRole('heading', { name: 'User administration' })).toBeVisible()
+    const nav = page.getByRole('navigation', { name: 'Main navigation' })
+    await expect(nav.getByRole('link', { name: 'Students' })).toHaveCount(0)
+    await expect(page.getByRole('cell', { name: 'registrar@example.com', exact: true })).toBeVisible()
+    await nav.getByRole('link', { name: 'System settings' }).click()
+    await expect(page.getByLabel('Institution name')).toHaveValue('Student Information')
+    await nav.getByRole('link', { name: 'Audit logs' }).click()
+    await expect(page.getByRole('heading', { name: 'Audit logs' })).toBeVisible()
+    await page.getByLabel('Action', { exact: true }).selectOption('login_succeeded')
+    await page.getByRole('button', { name: 'Apply filters' }).click()
+    await expect(page.getByRole('cell', { name: 'login succeeded', exact: true }).first()).toBeVisible()
+    await page.goto('/students')
+    await expect(page).toHaveURL(/\/forbidden$/)
+    await page.goto('/grades')
+    await expect(page).toHaveURL(/\/forbidden$/)
+  })
+
+  test('registrar has academic screens and cannot enter administration', async ({ page }) => {
+    await page.goto('/login')
+    await page.getByLabel('Email').fill('registrar@example.com')
+    await page.getByLabel('Password').fill('password')
+    await page.getByRole('button', { name: 'Sign in' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
+    const nav = page.getByRole('navigation', { name: 'Main navigation' })
+    await expect(nav.getByRole('link', { name: 'Students', exact: true })).toBeVisible()
+    await expect(nav.getByRole('link', { name: 'User accounts' })).toHaveCount(0)
+    await expect(nav.getByRole('link', { name: 'Audit logs' })).toHaveCount(0)
+    await page.goto('/admin/audit-logs')
+    await expect(page).toHaveURL(/\/forbidden$/)
+    await page.goto('/admin/users')
+    await expect(page).toHaveURL(/\/forbidden$/)
+  })
+})

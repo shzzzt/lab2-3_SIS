@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-theme="teal">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f5f1" />
+    <title>Student Information</title>
+    <script>
+      // Paint the last saved theme before React loads so the colours do not flash.
+      try {
+        var cached = JSON.parse(localStorage.getItem('branding_cache') || 'null')
+        if (cached && typeof cached.theme === 'string') document.documentElement.dataset.theme = cached.theme
+        if (cached && typeof cached.institution_name === 'string' && cached.institution_name) document.title = cached.institution_name
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

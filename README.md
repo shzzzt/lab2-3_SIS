@@ -7,44 +7,6 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Quick local start (macOS / Linux)
-
-After installing dependencies and preparing the database, start both the API and
-the React student client from the repository root:
-
-```bash
-npm start
-```
-
-Open `http://127.0.0.1:5173`. The API runs at `http://127.0.0.1:8000`.
-For a seeded local database, sign in with `admin@example.com` / `password`.
-The launcher reuses servers already running from this project and starts only
-missing servers. Repeating `npm start` is safe. It refuses to reuse a port owned
-by another project. Press Ctrl+C to stop servers started in that terminal.
-This local launcher uses `lsof`, which is included with macOS.
-
-Install the two separate sets of JavaScript dependencies on a fresh checkout:
-
-```bash
-npm ci
-npm --prefix student-frontend ci
-```
-
-For local development without PostgreSQL, set `DB_CONNECTION=sqlite` and
-`DB_DATABASE=database/database.sqlite` in `.env`, then run:
-
-```bash
-touch database/database.sqlite
-php artisan config:clear
-php artisan migrate
-```
-
-On a **new, empty local database only**, run `php artisan db:seed` to add demo
-accounts and records. The seeder deletes existing academic data.
-Ensure `APP_KEY` and `JWT_SECRET` are configured using the setup instructions below.
-The React client defaults to `http://127.0.0.1:8000/api/v1`; override this with
-`VITE_API_BASE_URL` in `student-frontend/.env` if needed.
-
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
